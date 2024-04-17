@@ -3,9 +3,9 @@
   hosts: all
   gather_facts: no
   vars:
-    certificate_path: "/local/certificate.crt"
-    private_key_path: "/local/privatekey.key"
-    ca_bundle_path: "/local/ca_bundle.crt"
+    certificate_path: "/var/lib/awx/projects/ssl-exaservers.com/certificate.crt"
+    private_key_path: "/var/lib/awx/projects/ssl-exaservers.com/privatekey.key"
+    ca_bundle_path: "/var/lib/awx/projects/ssl-exaservers.com/ca_bundle.crt"
 
   tasks:
     - name: Remove exisiting files
