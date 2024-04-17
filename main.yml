@@ -13,14 +13,14 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - /etc/ssl/certs/exaservers.crt
+        - /etc/pki/tls/certs/exaservers.crt
         - /etc/pki/tls/private/exaservers.key
         - /etc/postfix/ssl/smtpd.pem
 
     - name: Copy SSL certificate
       copy:
         src: "{{ certificate_path }}"
-        dest: "/etc/ssl/certs/exaservers.crt"
+        dest: "/etc/pki/tls/certs/exaservers.crt"
 
     - name: Copy SSL private key
       copy:
@@ -29,7 +29,7 @@
 
     - name: Copy certificate.crt content
       slurp:
-        src: /etc/ssl/certs/exaservers.crt
+        src: /etc/pki/tls/certs/exaservers.crt
       register: cert_contents
 
     - name: Copy file.key content
