@@ -29,15 +29,13 @@
 
     - name: Copy certificate.crt content
       slurp:
-        src: "{{ certificate_path }}"
+        src: /etc/ssl/certs/exaservers.crt
       register: cert_contents
-      delegate_to: localhost
 
     - name: Copy file.key content
       slurp:
-        src: "{{ private_key_path }}"
+        src: /etc/pki/tls/private/exaservers.key
       register: key_contents
-      delegate_to: localhost
 
     - name: Combine contents into smtpd file
       template:
