@@ -1,0 +1,52 @@
+---
+- name: Update SSL certificate on GWEFA
+  hosts: all
+  gather_facts: no
+  vars:
+    certificate_path: "/local/certificate.crt"
+    private_key_path: "/local/privatekey.key"
+    ca_bundle_path: "/local/ca_bundle.crt"
+
+  tasks:
+    - name: Remove exisiting files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/ssl/certs/exaservers.crt
+        - /etc/pki/tls/private/exaservers.key
+        - /etc/postfix/ssl/smtpd.pem
+
+    - name: Copy SSL certificate
+      copy:
+        src: "{{ certificate_path }}"
+        dest: "/etc/ssl/certs/exaservers.crt"
+
+    - name: Copy SSL private key
+      copy:
+        src: "{{ private_key_path }}"
+        dest: "/etc/pki/tls/private/exaservers.key"
+
+    - name: Copy certificate.crt content
+      slurp:
+        src: "{{ certificate_path }}"
+      register: cert_contents
+
+    - name: Copy file.key content
+      slurp:
+        src: "{{ private_key_path }}"
+      register: key_contents
+
+    - name: Combine contents into smtpd file
+      template:
+        src: smtpd.j2
+        dest: /etc/postfix/ssl/smtpd.pem
+      vars:
+        certificate_content: "{{ cert_contents['content'] | b64decode }}"
+        key_content: "{{ key_contents['content'] | b64decode }}"
+
+    - name: Restart httpd service
+      command: systemctl restart httpd
+
+    - name: Restart postfix service
+      command: systemctl restart postfix
