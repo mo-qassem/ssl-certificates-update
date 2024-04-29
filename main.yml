@@ -46,6 +46,8 @@
       register: key_contents
 
     - name: Combine contents into smtpd file
+      become: true
+      become_user: root
       template:
         src: smtpd.j2
         dest: /etc/postfix/ssl/smtpd.pem
