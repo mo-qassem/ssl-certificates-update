@@ -11,6 +11,7 @@
 
   tasks:
     - name: Remove exisiting files
+      become: true
       file:
         path: "{{ item }}"
         state: absent
