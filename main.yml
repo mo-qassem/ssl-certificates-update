@@ -1,6 +1,8 @@
 ---
 - name: Update SSL certificate on GWEFA
   hosts: all
+  become: true
+  become_user: exadmn
   gather_facts: no
   vars:
     certificate_path: "/var/lib/awx/projects/ssl-exaservers.com/certificate.crt"
