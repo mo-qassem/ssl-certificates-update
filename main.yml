@@ -57,14 +57,12 @@
 
     - name: Restart httpd service
       become: true
-      become_user: root
       service:
         name: httpd
         state: restarted
 
     - name: Restart postfix service
       become: true
-      become_user: root
       service:
         name: postfix
         state: restarted
