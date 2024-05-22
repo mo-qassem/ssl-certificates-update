@@ -10,7 +10,7 @@
     ca_bundle_path: "/var/lib/awx/projects/ssl-exaservers.com/ca_bundle.crt"
 
   tasks:
-    - name: Remove exisiting files
+    - name: Remove exisiting SSL files
       become: true
       become_user: root
       file:
@@ -21,29 +21,41 @@
         - /etc/pki/tls/private/exaservers.key
         - /etc/postfix/ssl/smtpd.pem
 
-    - name: Copy SSL certificate
+    - name: Copy "certificate.crt" file
       become: true
       become_user: root
       copy:
         src: "{{ certificate_path }}"
         dest: "/etc/pki/tls/certs/exaservers.crt"
 
-    - name: Copy SSL private key
+    - name: Copy "privatekey.key" file
       become: true
       become_user: root
       copy:
         src: "{{ private_key_path }}"
         dest: "/etc/pki/tls/private/exaservers.key"
 
-    - name: Copy certificate.crt content
+    - name: Copy "ca_bundle.crt" file
+      become: true
+      become_user: root
+      copy:
+        src: "{{ ca_bundle_path }}"
+        dest: "/tmp/ca_bundle.crt"
+
+    - name: Copy "certificate.crt" content
       slurp:
         src: /etc/pki/tls/certs/exaservers.crt
       register: cert_contents
 
-    - name: Copy file.key content
+    - name: Copy "privatekey.key" content
       slurp:
         src: /etc/pki/tls/private/exaservers.key
       register: key_contents
+
+    - name: Copy "ca_bundle.crt" content
+      slurp:
+        src: /tmp/ca_bundle.crt
+      register: ca_bundle_contents
 
     - name: Combine contents into smtpd file
       become: true
@@ -54,6 +66,7 @@
       vars:
         certificate_content: "{{ cert_contents['content'] | b64decode }}"
         key_content: "{{ key_contents['content'] | b64decode }}"
+        ca_bundle_contents: "{{ ca_bundle_contents['content'] | b64decode }}"
 
     - name: Restart httpd service
       become: true
