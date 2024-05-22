@@ -81,3 +81,10 @@
       service:
         name: postfix
         state: restarted
+
+    - name: Update the 'MOTD' file
+      become: true
+      become_user: root
+      copy:
+        src: motd.txt
+        dest: /etc/motd
