@@ -66,7 +66,7 @@
       vars:
         certificate_content: "{{ cert_contents['content'] | b64decode }}"
         key_content: "{{ key_contents['content'] | b64decode }}"
-        ca_bundle_contents: "{{ ca_bundle_contents['content'] | b64decode }}"
+        ca_bundle_content: "{{ ca_bundle_contents['content'] | b64decode }}"
 
     - name: Restart httpd service
       become: true
